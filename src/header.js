@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const express = require('express');
 
 async function scrapeBestSellers() {
   const browser = await puppeteer.launch({ headless: true });
@@ -7,19 +8,20 @@ async function scrapeBestSellers() {
 
   const products = await page.evaluate(() => {
     const productList = [];
-    const productElements = document.querySelectorAll('.zg-item-immersion');
 
+    const productElements = document.querySelectorAll('.a-carousel-card');
     productElements.forEach(product => {
-      const title = product.querySelector('.p13n-sc-truncated')?.textContent.trim();
-      const price = product.querySelector('.p-price')?.textContent.trim();
-      const link = product.querySelector('.a-link-normal')?.href;
-      if (title && price) {
-        productList.push({ title, price, link });
+      const title = product.querySelector('.p13n-sc-truncate-desktop-type2')?.innerText.trim() || 'Título não encontrado';
+      const price = product.querySelector('._cDEzb_p13n-sc-price_3mJ9Z')?.innerText.trim() || 'Preço não encontrado';
+      const link = product.querySelector('a.a-link-normal')?.href || '#';
+
+      if (title && price) { //se titulo e preco forem encontrados
+        productList.push({ title, price, link }); //o prodtoduto e adicionado a lista productList
       }
     });
 
     return productList;
-  }); 
+  });
 
   await browser.close();
   return products;
