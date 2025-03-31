@@ -15,8 +15,11 @@ async function scrapeBestSellers() {
       const price = product.querySelector('._cDEzb_p13n-sc-price_3mJ9Z')?.innerText.trim() || 'Preço não encontrado';
       const link = product.querySelector('a.a-link-normal')?.href || '#';
 
-      if (title && price) { //se titulo e preco forem encontrados
-        productList.push({ title, price, link }); //o prodtoduto e adicionado a lista productList
+      const idMatch = link.match(/\/dp\/([A-Z0-9]{10})/);
+      const id = idMatch ? idMatch[1] : 'ID não encontrado';  
+
+      if (title && price) { 
+        productList.push({ id, title, price, link }); 
       }
     });
 

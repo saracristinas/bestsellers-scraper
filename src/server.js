@@ -5,8 +5,6 @@ const productRoutes = require('./routes/products.routes');
 const app = express();
 const port = 3000;
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/api', productRoutes)
 
 // Inicia o servidor
