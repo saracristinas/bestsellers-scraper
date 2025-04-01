@@ -67,3 +67,19 @@ This will start a local emulator of AWS Lambda and tunnel your requests to and f
 Now you can invoke the function as before, but this time the function will be executed locally. Now you can develop your function locally, invoke it, and see the results immediately without having to re-deploy.
 
 When you are done developing, don't forget to run `serverless deploy` to deploy the function to the cloud.
+
+
+
+
+
+
+Commit:
+"Implementação da coleta do ID real dos produtos da Amazon no scraper"
+
+Alterações realizadas:
+
+Atualização do scraper para coletar o ID real do produto diretamente da URL da Amazon, ao invés de um ID genérico.
+
+A extração do ID é feita utilizando uma expressão regular que captura o valor correto após o /dp/ no link do produto.
+
+A estrutura dos dados extraídos (como Title, Price e Link) foi mantida, mas agora o produto possui um ID único extraído da URL.
