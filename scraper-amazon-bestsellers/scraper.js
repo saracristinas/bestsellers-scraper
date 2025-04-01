@@ -1,48 +1,38 @@
-// scraper.js - Usando SDK v3
-const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb');
+// scraper.js
 const puppeteer = require('puppeteer');
+const { saveProduct } = require('./db'); // Função para salvar no DynamoDB
 
-// Cria o cliente DynamoDB
-const client = new DynamoDBClient({ region: 'us-east-1' });
-const dynamodb = DynamoDBDocumentClient.from(client);
-
+// Função para extrair produtos da Amazon
 async function scrapeAmazon() {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-  await page.goto('https://www.amazon.com.br/gp/bestsellers');
+  await page.goto('https://www.amazon.com.br/gp/bestsellers', { waitUntil: 'domcontentloaded' });
 
   const products = await page.evaluate(() => {
     const items = Array.from(document.querySelectorAll('.a-carousel-card'));
-    return items.map(product => ({
-      title: product.querySelector('.p13n-sc-truncate-desktop-type2')?.innerText.trim() || 'Título não encontrado',
-      price: product.querySelector('._cDEzb_p13n-sc-price_3mJ9Z')?.innerText.trim() || 'Preço não encontrado',
-      link: product.querySelector('a.a-link-normal')?.href || '#'
-    }));
-  });
+    return items.map(product => {
+      const title = product.querySelector('.p13n-sc-truncate-desktop-type2')?.innerText.trim();
+      const price = product.querySelector('._cDEzb_p13n-sc-price_3mJ9Z')?.innerText.trim();
+      const link = product.querySelector('a.a-link-normal')?.href;
 
-  console.log(products); // Exibe os produtos no console
+      // Extrair o ID real do produto a partir do link
+      const idMatch = link.match(/\/dp\/([A-Z0-9]{10})/); // Expressão regular para pegar o ID real
+      const productID = idMatch ? idMatch[1] : 'ID não encontrado'; // Usa o ID real se encontrado, senão retorna 'ID não encontrado'
+
+      return {
+        ProductID: productID, // Agora usamos o ID real extraído da URL
+        Title: title || 'Título não encontrado',
+        Price: price || 'Preço não encontrado',
+        Link: link || 'Link não encontrado'
+      };
+    });
+  });
 
   await browser.close();
 
   // Salva os produtos no DynamoDB
   for (let product of products) {
-    const params = {
-      TableName: 'ProductsTable',
-      Item: {
-        ProductID: product.link, // Usando o link como ID único
-        Title: product.title,
-        Price: product.price,
-        Link: product.link,
-      },
-    };
-
-    try {
-      await dynamodb.send(new PutCommand(params)); // Usando PutCommand para o SDK v3
-      console.log('Produto salvo com sucesso:', product);
-    } catch (error) {
-      console.error('Erro ao salvar o produto:', error);
-    }
+    await saveProduct(product); // Chama a função para salvar o produto no DynamoDB
   }
 
   return products; // Retorna os dados dos produtos
