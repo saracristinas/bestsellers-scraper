@@ -1,15 +1,3 @@
-// exports.hello = async (event) => {
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify({
-//       message: "Go Serverless v4! Your function executed successfully!",
-//     }),
-//   };
-// };
-
-
-
-
 // Aqui e onde eu vou definir as funcoes Lambda que serao invocadas pela API Gateway.
  // Aqui, eu vou usar o scraper que defini no scraper.js, invocar o scraping, salvar os dados no DynamoDB e retornar uma resposta para o usuário da API.
 
