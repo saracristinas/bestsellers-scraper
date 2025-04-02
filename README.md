@@ -46,34 +46,43 @@ Este projeto é uma API Serverless que utiliza um web scraper para capturar os p
 ## 🚀 Como Rodar Localmente
 
 ### 1️⃣ Pré-requisitos
-Antes de começar, certifique-se de ter instalado:
+Antes de começar, **certifique-se** de ter instalado:
 
-- **Node.js** (v20 ou superior)
-- **NPM** ou **Yarn**
-- **AWS CLI** configurado (caso queira testar com DynamoDB na AWS)
-- **Serverless Framework** instalado globalmente:
+- **Node.js** (v20 ou superior)  
+- **NPM** ou **Yarn**  
+- **AWS CLI** configurado (caso queira testar com DynamoDB na AWS)  
+- **Serverless Framework** instalado globalmente:  
   ```sh
   npm install -g serverless
   ```
 
 ### 2️⃣ Instalar Dependências
-No diretório do projeto, execute:
+No diretório do projeto, execute:  
 ```sh
 npm install
 ```
 
-### 3️⃣ Rodar o DynamoDB Localmente (Opcional)
-Se você deseja testar sem precisar da AWS, pode rodar o DynamoDB localmente:
+### 3️⃣ Rodar o DynamoDB Localmente *(Opcional)*
+Se você deseja testar sem precisar da AWS, pode rodar o DynamoDB localmente:  
 ```sh
 serverless dynamodb start
 ```
+⚠️ **Observação:** Certifique-se de que o plugin `serverless-dynamodb-local` está instalado e configurado no `serverless.yml`. Se ainda não estiver, instale com:  
+```sh
+npm install --save-dev serverless-dynamodb-local
+```
 
 ### 4️⃣ Rodar a API Localmente
-Execute o seguinte comando para iniciar a API:
+Execute o seguinte comando para iniciar a API:  
 ```sh
 serverless offline --reloadHandler
 ```
-Isso disponibilizará os endpoints localmente.
+Isso disponibilizará os endpoints localmente.  
+
+⚠️ **Se o comando não funcionar**, tente:  
+```sh
+serverless offline
+```
 
 ---
 
@@ -143,4 +152,7 @@ Caso tenha alguma dúvida ou sugestão, entre em contato!
 
 👩‍💻 **Desenvolvedora:** [Sara Cristina](https://github.com/saracristinas)  
 📧 **Email:** [sarasales17062000@gmail.com](mailto:sarasales17062000@gmail.com)
+
+
+
 
