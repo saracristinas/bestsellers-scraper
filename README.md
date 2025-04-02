@@ -12,7 +12,7 @@ Este projeto é uma API Serverless que utiliza um web scraper para capturar os p
 5. [📄 Endpoints Disponíveis](#-endpoints-disponíveis)
 6. [🔐 Autenticação](#-autenticação)
 7. [📝 Sobre o Desenvolvimento](#-sobre-o-desenvolvimento)
-8. [🎯 Considerações Finais](#-considerações-finais)
+8. [🎯 Próximos Passos](#-próximos-passos)
 9. [📞 Contato](#-contato)
 
 ---
@@ -41,54 +41,83 @@ Este projeto é uma API Serverless que utiliza um web scraper para capturar os p
 
 ---
 
-## 🚀 Como Rodar Localmente
+## 🚀 Como Rodar o Projeto
 
-### 1️⃣ Pré-requisitos
-Antes de começar, **certifique-se** de ter instalado:
+### 📌 **Se quiser apenas acessar os produtos já salvos na AWS:**
 
-- **Node.js** (v20 ou superior)  
-- **NPM** ou **Yarn**  
-- **AWS CLI** configurado (caso queira testar com DynamoDB na AWS)  
-- **Serverless Framework** instalado globalmente:  
-  ```sh
-  npm install -g serverless
-  ```
+Se você deseja **somente consultar os produtos** sem rodar nada localmente, basta acessar a API já hospedada na AWS:
 
-### 2️⃣ Instalar Dependências
-No diretório do projeto, execute:  
+```sh
+curl -X GET https://apmou89x9b.execute-api.us-east-1.amazonaws.com/products
+```
+
+Isso retornará os produtos que já estão armazenados no **DynamoDB na AWS**.
+
+---
+
+### 📌 **Rodando o Scraper Localmente (para popular a AWS)**
+
+Se você quiser **rodar o scraper e adicionar mais produtos ao banco na AWS**, siga estes passos:
+
+1️⃣ **Clonar o repositório:**
+
+```sh
+git clone https://github.com/saracristinas/bestsellers-scraper.git
+```
+
+2️⃣ **Instalar dependências:**
+
 ```sh
 npm install
 ```
 
-### 3️⃣ Rodar o DynamoDB Localmente *(Opcional)*
-Se você deseja testar sem precisar da AWS, pode rodar o DynamoDB localmente:  
+3️⃣ **Rodar o scraper para popular o banco na AWS:**
+
 ```sh
-serverless dynamodb start
-```
-⚠️ **Observação:** Certifique-se de que o plugin `serverless-dynamodb-local` está instalado e configurado no `serverless.yml`. Se ainda não estiver, instale com:  
-```sh
-npm install --save-dev serverless-dynamodb-local
+node scraper.js
 ```
 
-### 4️⃣ Rodar a API Localmente
-Execute o seguinte comando para iniciar a API:  
-```sh
-serverless offline --reloadHandler
-```
-Isso disponibilizará os endpoints localmente.  
+Agora os produtos foram adicionados ao DynamoDB na AWS e podem ser acessados pela API online.
 
-⚠️ **Se o comando não funcionar**, tente:  
+---
+
+### 📌 **Rodando a API Localmente**
+
+Se quiser testar a API **localmente**, é necessário instalar o **Serverless Framework**.
+
+1️⃣ **Instalar o Serverless Framework:**
+
+```sh
+npm install -g serverless
+```
+
+2️⃣ **Rodar a API localmente:**
+
 ```sh
 serverless offline
 ```
 
+Agora os endpoints estarão disponíveis localmente, por exemplo:
+
+```sh
+curl -X GET http://localhost:3000/products
+```
+
+⚠ **Se estiver usando DynamoDB localmente**, você precisa rodar o banco antes:
+
+```sh
+serverless dynamodb start
+```
+
+Se não rodar o scraper, a API local **retornará uma lista vazia**.
+
 ---
 
-## 🌐 Endpoint da API em Produção
+## 📝 Sobre o Desenvolvimento
 
-A API está disponível na AWS e pode ser acessada pelo seguinte endpoint:
+Este projeto foi desenvolvido para demonstrar habilidades em **web scraping, AWS e Serverless Framework**. Durante o desenvolvimento, enfrentei desafios como otimização do Puppeteer para rodar em ambientes restritos e configuração de infraestrutura serverless.
 
-🔗 https://apmou89x9b.execute-api.us-east-1.amazonaws.com/products
+A principal decisão foi manter a API **simples e direta**, sem adicionar camadas desnecessárias. A API funciona sem necessidade de autenticação e os dados são extraídos diretamente da Amazon com um identificador real do produto.
 
 ---
 ## 📄 Endpoints Disponíveis
@@ -104,43 +133,42 @@ Retorna os produtos armazenados no DynamoDB.
 curl -X GET https://apmou89x9b.execute-api.us-east-1.amazonaws.com/products?quantity=5
 ```
 
-### 🔹 `POST /scrape`
-Executa o scraper manualmente para buscar novos produtos e armazená-los no DynamoDB.
-
-**Exemplo de Requisição:**
-```sh
-curl -X POST https://apmou89x9b.execute-api.us-east-1.amazonaws.com/scrape
-```
-
 ---
 
 ## 🔐 Autenticação
-Para acessar o serviço localmente, você precisará configurar as credenciais da AWS na sua máquina.
+Atualmente, não há autenticação na API, pois o scraper roda localmente. No futuro, medidas de segurança poderão ser implementadas.
+
+---
+
+## 🌐 Endpoint da API em Produção
+
+A API está disponível na AWS e pode ser acessada pelo seguinte endpoint:
+
+🔗 https://apmou89x9b.execute-api.us-east-1.amazonaws.com/products
 
 ---
 
 ## 📝 Sobre o Desenvolvimento
 
-Quando comecei esse projeto, minha primeira ideia foi estruturar o código separando controllers, services e routes. No entanto, com o tempo, percebi que essa divisão acabava sendo desnecessária para um projeto desse porte. Decidi então simplificar a organização, deixando tudo mais direto e fácil de manter.
+Ao iniciar este projeto, minha principal preocupação foi estruturar o código de forma clara e objetiva. Inicialmente, considerei dividir o código em controllers, services e routes, mas percebi que para um projeto desse porte, manter a estrutura simples e direta era a melhor escolha.
 
-No início, também enfrentei dificuldades com o Serverless Framework. Eu não conhecia muito bem a ferramenta e, além disso, precisei aprender sobre as credenciais da AWS para conseguir fazer o deploy corretamente. Confesso que esse foi um dos momentos mais desafiadores, pois os erros relacionados à configuração das credenciais não eram muito claros no começo.
+No início, tive desafios ao configurar o Serverless Framework, principalmente na configuração das credenciais da AWS. A documentação nem sempre era clara, e foi preciso bastante tentativa e erro para conseguir fazer o deploy corretamente.
 
-Outro problema grande foi lidar com as dependências do projeto. O Puppeteer, por exemplo, deu muito trabalho. Ele é pesado, e ao tentar rodá-lo na AWS Lambda, descobri que ultrapassava o limite de tamanho permitido. Depois de algumas pesquisas, encontrei uma solução: usar chrome-aws-lambda (uma versão reduzida do Chrome) e puppeteer-core, que é uma versão mais leve da biblioteca. Foi um aprendizado e tanto, mas no final consegui fazer com que o scraper rodasse corretamente.
+Outro grande desafio foi o Puppeteer. Ele é pesado e não funciona diretamente na AWS Lambda devido ao limite de tamanho. Para resolver isso, utilizei `chrome-aws-lambda` e `puppeteer-core`, que são versões otimizadas para ambientes serverless. Essa adaptação foi um dos momentos mais desafiadores do projeto.
 
-Depois que o scraping estava funcionando, precisei garantir que os dados fossem extraídos corretamente. Usei querySelector para capturar informações do DOM da Amazon e ainda implementei regex para extrair o ID real dos produtos a partir da URL. Isso garantiu que os dados fossem coletados de maneira confiável, sem depender apenas da estrutura visual da página, que pode mudar com o tempo.
+A extração dos dados do site da Amazon também exigiu atenção. Utilizei `querySelector` para capturar os elementos do DOM e implementei regex para extrair o ID real dos produtos a partir da URL. Dessa forma, a API consegue manter os dados organizados e confiáveis.
 
-Com o scraper pronto, passei para a parte da API. Inicialmente, pensei em usar Express.js, mas depois percebi que isso era desnecessário, já que o API Gateway já cuida do roteamento. Acabei removendo essa dependência para deixar o projeto mais leve e otimizado.
+Por fim, para a API, inicialmente pensei em utilizar Express.js, mas percebi que o API Gateway já faz esse trabalho, tornando essa dependência desnecessária. Removi para deixar o projeto mais leve e eficiente.
 
-No final, apesar dos desafios, fiquei satisfeita com o resultado. O projeto agora está funcional, simples e cumpre bem seu objetivo. Ainda há espaço para melhorias, mas ele já atende completamente aos requisitos do desafio!
+O resultado final é uma API funcional e bem estruturada, atendendo aos requisitos do desafio e proporcionando uma base sólida para futuras melhorias.
 
 ---
 ## 🎯 Próximos Passos
 
-Melhorar o funcionamento do scraper para garantir que colete os dados corretamente.
-
-Implementar autenticação para proteger a API.
-
-Melhorar logs e monitoramento para identificar erros mais facilmente.
+- **Adicionar novos endpoints** para mais funcionalidades.
+- **Melhorar o scraper** para garantir que colete os dados corretamente.
+- **Implementar autenticação** para proteger a API.
+- **Melhorar logs e monitoramento** para identificar erros mais facilmente.
 
 ---
 
