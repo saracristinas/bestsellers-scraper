@@ -2,8 +2,6 @@
 
 Este projeto é uma API Serverless que utiliza um web scraper para capturar os produtos mais vendidos da Amazon Brasil. Os dados extraídos são armazenados no DynamoDB e podem ser acessados por meio de um endpoint HTTP. O scraper roda localmente e alimenta o banco de dados na AWS, enquanto a API é hospedada na AWS utilizando Lambda e API Gateway.
 
-⚠️ **ATENÇÃO:** Atualmente, o scraper não está funcionando corretamente e precisa de ajustes para capturar os produtos corretamente.
-
 ---
 
 ## 📋 Sumário
