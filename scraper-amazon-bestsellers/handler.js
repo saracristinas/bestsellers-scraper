@@ -1,39 +1,39 @@
-// Aqui e onde eu vou definir as funcoes Lambda que serao invocadas pela API Gateway.
- // Aqui, eu vou usar o scraper que defini no scraper.js, invocar o scraping, salvar os dados no DynamoDB e retornar uma resposta para o usuário da API.
- const { scrape } = require('./scraper');  // Importa a função de scraping
- const { getProducts } = require('./db');  // Importa a função para buscar no DynamoDB
- 
- module.exports.scrape = async (event) => {
-   try {
-     // Número de produtos a serem retornados, com default para 3
-     const quantity = event.queryStringParameters?.quantity || 3;
- 
-     // Chama o scraper para extrair os produtos
-     const scrapedProducts = await scrape();  // Chama o scraper aqui
-     
-     // Salva os produtos no DynamoDB (se necessário)
-     for (let product of scrapedProducts) {
-       await saveProduct(product);  // Salva cada produto no banco
-     }
- 
-     // Chama a função para pegar os produtos do DynamoDB
-     const products = await getProducts(quantity);  // Passa a quantidade para pegar mais ou menos produtos
- 
-     return {
-       statusCode: 200,
-       body: JSON.stringify({
-         message: 'Produtos extraídos e salvos com sucesso!',
-         products: products,  // Retorna os produtos encontrados
-       }),
-     };
-   } catch (error) {
-     return {
-       statusCode: 500,
-       body: JSON.stringify({
-         message: 'Erro ao extrair os produtos',
-         error: error.message,
-       }),
-     };
-   }
- };
- 
+const { scrapeAmazon } = require('./scraper'); // Chama a função scrapeAmazon do scraper.js
+const { getProducts } = require('./db');  // Função para buscar os produtos no DynamoDB
+
+async function getProductsHandler(event) {
+  const quantity = event.queryStringParameters && event.queryStringParameters.quantity
+    ? Math.max(1, parseInt(event.queryStringParameters.quantity))  // Garante que a quantidade será pelo menos 1
+    : 3; // Limita a 3 produtos por padrão
+
+  try {
+    let products = await getProducts(quantity);
+
+    // Caso não haja produtos no DynamoDB, executa o scraper
+    if (products.length === 0) {
+      console.log('Nenhum produto encontrado no DynamoDB, executando o scraper...');
+      await scrapeAmazon();  // Executa o scraper para preencher o DynamoDB
+      products = await getProducts(quantity);  // Busca novamente após a execução do scraper
+    }
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'Produtos recuperados com sucesso',
+        data: products,
+      }),
+    };
+  } catch (error) {
+    console.error('Erro ao recuperar produtos:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: 'Erro ao recuperar produtos',
+        error: error.message,
+      }),
+    };
+  }
+}
+
+// 🔹 Corrigindo a exportação da função
+module.exports.getProductsHandler = getProductsHandler;

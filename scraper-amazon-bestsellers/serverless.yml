@@ -5,6 +5,7 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: us-east-1
+  stage: dev
   iam:
     role:
       statements:
@@ -17,33 +18,46 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [BestSellersTable, Arn]  # ARN da sua tabela DynamoDB
+            - Fn::GetAtt:
+                - ProductsTable
+                - Arn  # ARN da sua tabela DynamoDB
   httpApi:
-    cors: true
+    cors: true  # Permitir CORS para desenvolvimento local ou em produção
+    shouldStartNameWithService: true  # Garante que o nome da API seja correto
+    name: ${self:service}-${opt:stage, 'dev'}  # Define o nome da API para o serviço e o stage
 
 functions:
   scrape:
-    handler: scraper.scrape  # Verifique se está correto
+    handler: scraper.scrapeAmazon
     events:
       - httpApi:
           path: /scrape
           method: get
-    timeout: 300  # Aumentado para garantir tempo suficiente para o scraper
+    timeout: 30
+    memorySize: 1024
+
+  getProducts:
+    handler: handler.getProductsHandler
+    events:
+      - httpApi:
+          path: /products
+          method: get
+    timeout: 30
     memorySize: 1024
 
 plugins:
-  - serverless-offline  # Você pode manter isso para desenvolvimento local
-
+  - serverless-offline  # Permitir rodar a API localmente para testes
+  
 resources:
   Resources:
-    BestSellersTable:
+    ProductsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ProductsTable
         AttributeDefinitions:
           - AttributeName: ProductID
-            AttributeType: S  # Definindo como string
+            AttributeType: S  # Definir o tipo do atributo como String
         KeySchema:
           - AttributeName: ProductID
-            KeyType: HASH  # Definindo ProductID como chave primária
-        BillingMode: PAY_PER_REQUEST
+            KeyType: HASH  # A chave primária é o ProductID
+        BillingMode: PAY_PER_REQUEST  # Pagamento por demanda (sem capacidade provisionada)

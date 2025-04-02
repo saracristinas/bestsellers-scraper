@@ -12,15 +12,12 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.777.0",
     "@aws-sdk/lib-dynamodb": "^3.778.0",
-    "aws-sdk": "^2.1692.0",
-    "chrome-aws-lambda": "^10.1.0",
-    "express": "^5.1.0",
-    "puppeteer": "^24.4.0",
-    "puppeteer-core": "^10.4.0",
-    "serverless-http": "^3.2.0",
-    "uuid": "^11.1.0"
+    "@sparticuz/chromium": "^132.0.0",
+    "puppeteer": "^24.5.0",
+    "serverless": "^4.10.1"
   },
   "devDependencies": {
-    "serverless-offline": "^14.4.0"
+    "serverless-offline": "^14.4.0",
+    "webpack-node-externals": "^3.0.0"
   }
 }
