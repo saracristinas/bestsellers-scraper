@@ -136,6 +136,15 @@ Com o scraper pronto, passei para a parte da API. Inicialmente, pensei em usar E
 No final, apesar dos desafios, fiquei satisfeita com o resultado. O projeto agora está funcional, simples e cumpre bem seu objetivo. Ainda há espaço para melhorias, mas ele já atende completamente aos requisitos do desafio!
 
 ---
+## 🎯 Próximos Passos
+
+Melhorar o funcionamento do scraper para garantir que colete os dados corretamente.
+
+Implementar autenticação para proteger a API.
+
+Melhorar logs e monitoramento para identificar erros mais facilmente.
+
+---
 
 ## 🎯 Considerações Finais
 
@@ -146,6 +155,7 @@ Apesar de não estar 100% perfeito e ter alguns detalhes que poderiam ser refina
 No fim, o mais importante foi ter concluído o desafio e aprendido tanto no processo. Cada erro e acerto me ajudaram a evoluir como desenvolvedora, e isso é o que mais me motiva a continuar.
 
 ---
+
 
 ## 📞 Contato
 Caso tenha alguma dúvida ou sugestão, entre em contato!
