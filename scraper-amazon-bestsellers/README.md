@@ -72,14 +72,29 @@ When you are done developing, don't forget to run `serverless deploy` to deploy 
 
 
 
+```
+Rodando o projeto:
+```
 
-Commit:
-"Implementação da coleta do ID real dos produtos da Amazon no scraper"
+1️⃣ Rodar o scraper para popular o banco com produtos:
 
-Alterações realizadas:
+---------------------
+node runScraper
+---------------------
 
-Atualização do scraper para coletar o ID real do produto diretamente da URL da Amazon, ao invés de um ID genérico.
+Isso executa o scraper e salva os produtos no DynamoDB.
 
-A extração do ID é feita utilizando uma expressão regular que captura o valor correto após o /dp/ no link do produto.
+2️⃣ Consultar os produtos via API
+Agora que os produtos estão salvos no banco, basta chamar a API para buscar os produtos:
 
-A estrutura dos dados extraídos (como Title, Price e Link) foi mantida, mas agora o produto possui um ID único extraído da URL.
+curl "http://localhost:3000/products?quantity=5"
+(Ou acessar via navegador/Postman, dependendo da configuração do servidor.)
+
+3️⃣ Se precisar rodar o servidor localmente
+Se o serverless offline estiver configurado, o comando seria:
+
+---
+serverless offline
+---
+
+Isso inicia a API localmente para receber requisições.

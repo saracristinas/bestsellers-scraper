@@ -1,16 +1,14 @@
 const puppeteer = require('puppeteer');
 const { saveProduct } = require('./db');
 
-
 async function scrapeAmazon() {
   let browser;
   
   try {
     console.log('🚀 Iniciando navegador...');
 
-    // Se estiver rodando na AWS Lambda, usa chrome-aws-lambda. Se não, roda normalmente.
     browser = await puppeteer.launch({
-      headless: true, // Modo sem interface gráfica
+      headless: true, 
     });    
 
     const page = await browser.newPage();
