@@ -1,20 +1,12 @@
-const { scrapeAmazon } = require('./scraper'); // Chama a função scrapeAmazon do scraper.js
-const { getProducts } = require('./db');  // Função para buscar os produtos no DynamoDB
+const { getProducts } = require('./db'); 
 
 async function getProductsHandler(event) {
   const quantity = event.queryStringParameters && event.queryStringParameters.quantity
-    ? Math.max(1, parseInt(event.queryStringParameters.quantity))  // Garante que a quantidade será pelo menos 1
-    : 3; // Limita a 3 produtos por padrão
+    ? Math.max(1, parseInt(event.queryStringParameters.quantity))  
+    : 3; 
 
   try {
     let products = await getProducts(quantity);
-
-    // Caso não haja produtos no DynamoDB, executa o scraper
-    if (products.length === 0) {
-      console.log('Nenhum produto encontrado no DynamoDB, executando o scraper...');
-      await scrapeAmazon();  // Executa o scraper para preencher o DynamoDB
-      products = await getProducts(quantity);  // Busca novamente após a execução do scraper
-    }
 
     return {
       statusCode: 200,
@@ -35,5 +27,4 @@ async function getProductsHandler(event) {
   }
 }
 
-// 🔹 Corrigindo a exportação da função
-module.exports.getProductsHandler = getProductsHandler;
+module.exports.getProductsHandler = getProductsHandler; 

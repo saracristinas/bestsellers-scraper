@@ -19,11 +19,11 @@ async function saveProduct(product) {
   };
 
   try {
-    const putCommand = new PutCommand(params);  // Criando o comando de PUT para DynamoDB
-    const result = await dynamodb.send(putCommand);  // Envia o comando
-    console.log('Produto salvo no DynamoDB:', result); // Sucesso ao salvar
+    const putCommand = new PutCommand(params);  
+    const result = await dynamodb.send(putCommand);  
+    console.log('Produto salvo no DynamoDB:', result); 
   } catch (error) {
-    console.error('Erro ao salvar o produto no DynamoDB:', error); // Erro ao salvar
+    console.error('Erro ao salvar o produto no DynamoDB:', error); 
   }
 }
 

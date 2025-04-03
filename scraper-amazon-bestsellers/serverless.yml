@@ -6,6 +6,8 @@ provider:
   runtime: nodejs20.x
   region: us-east-1
   stage: dev
+  memorySize: 1024
+  timeout: 30
   iam:
     role:
       statements:
@@ -22,20 +24,11 @@ provider:
                 - ProductsTable
                 - Arn  # ARN da sua tabela DynamoDB
   httpApi:
-    cors: true  # Permitir CORS para desenvolvimento local ou em produção
-    shouldStartNameWithService: true  # Garante que o nome da API seja correto
-    name: ${self:service}-${opt:stage, 'dev'}  # Define o nome da API para o serviço e o stage
+    cors: true
+    shouldStartNameWithService: true
+    name: ${self:service}-${opt:stage, 'dev'}
 
 functions:
-  scrape:
-    handler: scraper.scrapeAmazon
-    events:
-      - httpApi:
-          path: /scrape
-          method: get
-    timeout: 30
-    memorySize: 1024
-
   getProducts:
     handler: handler.getProductsHandler
     events:
@@ -46,8 +39,8 @@ functions:
     memorySize: 1024
 
 plugins:
-  - serverless-offline  # Permitir rodar a API localmente para testes
-  
+  - serverless-offline
+
 resources:
   Resources:
     ProductsTable:
@@ -56,8 +49,8 @@ resources:
         TableName: ProductsTable
         AttributeDefinitions:
           - AttributeName: ProductID
-            AttributeType: S  # Definir o tipo do atributo como String
+            AttributeType: S
         KeySchema:
           - AttributeName: ProductID
-            KeyType: HASH  # A chave primária é o ProductID
-        BillingMode: PAY_PER_REQUEST  # Pagamento por demanda (sem capacidade provisionada)
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
